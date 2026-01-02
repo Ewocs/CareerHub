@@ -1,13 +1,27 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { ThemeToggle } from "./theme-toggle"
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Helper function to get correct href for hash links
+  const getHref = (hash: string) => (pathname === "/" ? `#${hash}` : `/#${hash}`)
+
+  // Optional: Smooth scroll when already on homepage
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1)
+      const el = document.getElementById(id)
+      if (el) el.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [pathname])
 
   return (
     <header className="sticky top-0 z-50 glassmorphic border-b">
@@ -21,18 +35,18 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
+          <Link href={getHref("features")} className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
             Browse
-          </a>
+          </Link>
           <Link href="/assessments" className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
             Assessments
           </Link>
-          <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
+          <Link href={getHref("testimonials")} className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
             Success Stories
-          </a>
-          <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
+          </Link>
+          <Link href={getHref("pricing")} className="text-muted-foreground hover:text-foreground transition-colors smooth-fade">
             Plans
-          </a>
+          </Link>
         </div>
 
         {/* Desktop CTA */}
@@ -57,18 +71,18 @@ export default function Header() {
         {isOpen && (
           <div className="absolute top-16 left-0 right-0 glassmorphic border-b p-4 md:hidden slide-up">
             <div className="flex flex-col gap-4">
-              <a href="#features" className="text-foreground hover:text-muted-foreground transition-colors">
+              <Link href={getHref("features")} className="text-foreground hover:text-muted-foreground transition-colors">
                 Browse
-              </a>
+              </Link>
               <Link href="/assessments" className="text-foreground hover:text-muted-foreground transition-colors">
                 Assessments
               </Link>
-              <a href="#testimonials" className="text-foreground hover:text-muted-foreground transition-colors">
+              <Link href={getHref("testimonials")} className="text-foreground hover:text-muted-foreground transition-colors">
                 Success Stories
-              </a>
-              <a href="#pricing" className="text-foreground hover:text-muted-foreground transition-colors">
+              </Link>
+              <Link href={getHref("pricing")} className="text-foreground hover:text-muted-foreground transition-colors">
                 Plans
-              </a>
+              </Link>
               <div className="flex gap-2 pt-4">
                 <ThemeToggle />
                 <Link href="/login" className="flex-1">
