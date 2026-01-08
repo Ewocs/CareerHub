@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import {
   Sheet,
   SheetContent,
@@ -19,32 +18,24 @@ import { Separator } from "@/components/ui/separator";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAuthenticated = !!session;
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
-  // Prevent background scroll when mobile menu is open
+  // Handle section scrolling
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
 
-  // Handle section scrolling
-  /* ---------------------------
-   * Smooth scroll
-   * --------------------------- */
   const handleSectionClick = (hash: string) => {
     if (window.location.pathname === "/") {
-      const el = document.getElementById(hash);
-      el?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
     } else {
       window.location.href = `/#${hash}`;
     }
@@ -62,11 +53,7 @@ export default function Header() {
 
   const renderLink = (link: typeof LINKS[number], mobile = false) => {
     const Icon = link.icon;
-    // const baseClasses = mobile
-    //   ? "block w-full rounded-lg px-4 py-3 text-base font-medium text-foreground/80 hover:bg-foreground/10 hover:text-foreground transition-colors duration-200"
-    //   : "relative px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-200";
-    //   ? "group w-full rounded-xl px-4 py-3.5 text-base font-medium text-left flex items-center gap-3 text-foreground/70 hover:text-foreground hover:bg-primary/10 transition-all duration-200"
-    //   : "group relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground flex items-center gap-2 transition-all duration-200 rounded-lg hover:bg-primary/5";
+
     const baseClasses = mobile
       ? "group w-full rounded-xl px-4 py-3.5 text-base font-medium text-left flex items-center gap-3 text-foreground/70 hover:text-foreground hover:bg-primary/10 transition-all duration-200"
       : "group relative px-3 py-2 text-sm font-medium text-foreground/70 hover:text-foreground flex items-center gap-2 transition-all duration-200 rounded-lg hover:bg-primary/5";
@@ -80,11 +67,8 @@ export default function Header() {
           className={baseClasses}
           onClick={() => mobile && setIsOpen(false)}
         >
-          {Icon && <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />}
+          {Icon && <Icon className="w-4 h-4" />}
           {link.name}
-          {!mobile && (
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-primary/60 group-hover:w-full transition-all duration-300"></span>
-          )}
         </Link>
       );
     }
@@ -95,11 +79,8 @@ export default function Header() {
         className={baseClasses}
         onClick={() => handleSectionClick(link.hash!)}
       >
-        {Icon && <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />}
+        {Icon && <Icon className="w-4 h-4" />}
         {link.name}
-        {!mobile && (
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-primary/60 group-hover:w-full transition-all duration-300"></span>
-        )}
       </button>
     );
   };
