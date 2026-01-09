@@ -206,40 +206,74 @@ export default function Header() {
       </nav>
     </header>
     <>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 font-bold">
-            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
               C
             </div>
-            CareerHub
+            <span className="hidden font-bold sm:inline-block">CareerHub</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {LINKS.map((l) => renderLink(l))}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            {LINKS.map((link) => renderLink(link))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2">
+          {/* Desktop CTA & Theme Toggle */}
+          <div className="hidden md:flex items-center space-x-2">
             <ThemeToggle />
             {renderCTA()}
           </div>
 
+          {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2"
+            className="inline-flex items-center justify-center rounded-md p-2 text-foreground/60 hover:bg-accent hover:text-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary md:hidden"
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation menu"
           >
-            {isOpen ? <X /> : <Menu />}
+            <span className="sr-only">Open main menu</span>
+            {isOpen ? (
+              <X className="block h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Menu className="block h-6 w-6" aria-hidden="true" />
+            )}
           </button>
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 bg-black/30 md:hidden">
-          <div className="fixed right-0 top-0 h-full w-80 bg-background p-4">
-            <div className="space-y-2">
-              {LINKS.map((l) => renderLink(l, true))}
+        <div className="fixed inset-0 z-40 md:hidden">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm" 
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Menu Panel */}
+          <div className="fixed right-0 top-16 h-[calc(100vh-4rem)] w-full max-w-sm bg-background/95 backdrop-blur-xl border-l border-border/40 shadow-lg">
+            <div className="flex h-full flex-col">
+              {/* Navigation Links */}
+              <div className="flex-1 space-y-1 px-4 py-6">
+                {LINKS.map((link) => renderLink(link, true))}
+              </div>
+              
+              {/* CTA Buttons */}
+              <div className="border-t border-border/40 px-4 py-6">
+                {renderCTA(true)}
+              </div>
+              
+              {/* Theme Toggle */}
+              <div className="border-t border-border/40 px-4 py-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Theme</span>
+                  <ThemeToggle />
+                </div>
+              </div>
             </div>
-            <div className="mt-6">{renderCTA(true)}</div>
           </div>
         </div>
       )}
