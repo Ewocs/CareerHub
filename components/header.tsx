@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Sheet,
   SheetContent,
@@ -88,12 +89,14 @@ export default function Header() {
   };
 
   return (
-    <header className={cn(
-      "sticky top-0 z-50 w-full transition-all duration-300 border-b",
-      scrolled
-        ? "bg-background/80 backdrop-blur-xl border-border py-2"
-        : "bg-transparent border-transparent py-4"
-    )}>
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300 border-b",
+        scrolled
+          ? "bg-background/80 backdrop-blur-xl border-border py-2"
+          : "bg-transparent border-transparent py-4"
+      )}
+    >
       <nav className="container mx-auto flex items-center justify-between px-4 md:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group outline-none">
@@ -118,7 +121,9 @@ export default function Header() {
                 href={(link as any).href}
                 className={cn(
                   "flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-full transition-all",
-                  isActive ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  isActive
+                    ? "bg-background text-primary shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -148,7 +153,11 @@ export default function Header() {
           {/* Mobile Menu Trigger */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden rounded-full hover:bg-muted">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden rounded-full hover:bg-muted"
+              >
                 <Menu size={24} />
               </Button>
             </SheetTrigger>
@@ -156,7 +165,9 @@ export default function Header() {
               <div className="p-6 flex flex-col h-full bg-background/95 backdrop-blur-lg">
                 <SheetHeader className="flex flex-row items-center justify-between space-y-0 mb-8">
                   <SheetTitle className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">C</div>
+                    <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                      C
+                    </div>
                     <span className="font-bold">CareerHub</span>
                   </SheetTitle>
                   <SheetClose className="rounded-full p-2 hover:bg-muted transition-colors">
@@ -165,7 +176,9 @@ export default function Header() {
                 </SheetHeader>
 
                 <div className="space-y-1 mb-8">
-                  <p className="px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2">Explore</p>
+                  <p className="px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2">
+                    Explore
+                  </p>
                   {LINKS.map((link) => {
                     const Icon = link.icon;
                     return (
@@ -194,9 +207,7 @@ export default function Header() {
                     <div className="flex items-center justify-between">
                       <ThemeToggle />
                       <span className="text-sm font-medium">Appearance</span>
-
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -205,78 +216,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-    <>
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-              C
-            </div>
-            <span className="hidden font-bold sm:inline-block">CareerHub</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {LINKS.map((link) => renderLink(link))}
-          </nav>
-
-          {/* Desktop CTA & Theme Toggle */}
-          <div className="hidden md:flex items-center space-x-2">
-            <ThemeToggle />
-            {renderCTA()}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="inline-flex items-center justify-center rounded-md p-2 text-foreground/60 hover:bg-accent hover:text-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary md:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation menu"
-          >
-            <span className="sr-only">Open main menu</span>
-            {isOpen ? (
-              <X className="block h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Menu className="block h-6 w-6" aria-hidden="true" />
-            )}
-          </button>
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm" 
-            onClick={() => setIsOpen(false)}
-          />
-          
-          {/* Menu Panel */}
-          <div className="fixed right-0 top-16 h-[calc(100vh-4rem)] w-full max-w-sm bg-background/95 backdrop-blur-xl border-l border-border/40 shadow-lg">
-            <div className="flex h-full flex-col">
-              {/* Navigation Links */}
-              <div className="flex-1 space-y-1 px-4 py-6">
-                {LINKS.map((link) => renderLink(link, true))}
-              </div>
-              
-              {/* CTA Buttons */}
-              <div className="border-t border-border/40 px-4 py-6">
-                {renderCTA(true)}
-              </div>
-              
-              {/* Theme Toggle */}
-              <div className="border-t border-border/40 px-4 py-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Theme</span>
-                  <ThemeToggle />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
   );
 }
