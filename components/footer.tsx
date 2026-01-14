@@ -4,7 +4,6 @@ import { Github, Twitter, Linkedin } from "lucide-react"
 // Footer component
 export default function Footer() {
   return (
-    // Main footer wrapper with background and top border
     <footer className="bg-card border-t border-border">
       <div className="max-w-7xl mx-auto px-6 md:pl-10 py-12 md:py-16">
 
@@ -14,15 +13,12 @@ export default function Footer() {
           {/* BRAND */}
           <div className="max-w-xs md:pl-10">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-              {/* Logo box */}
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold">C</span>
               </div>
-
-              {/* Brand name */}
               <span className="font-bold text-foreground">CareerHub</span>
             </div>
-            <p className="text-sm text-muted-foreground ">
+            <p className="text-sm text-muted-foreground">
               Empowering careers and securing futures, one opportunity at a time.
             </p>
           </div>
@@ -65,13 +61,34 @@ export default function Footer() {
           </p>
 
           <div className="flex items-center gap-5">
-            <a href="#" aria-label="Twitter" className="social-icon">
+            {/* Twitter / X (link not available yet) */}
+            <a
+              href="#"
+              aria-label="Twitter"
+              className="social-icon"
+            >
               <Twitter className="w-5 h-5" />
             </a>
-            <a href="#" aria-label="LinkedIn" className="social-icon">
+
+            {/* LinkedIn */}
+            <a
+              href="https://www.linkedin.com/in/mansi-singhal-0a5580296/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="social-icon"
+            >
               <Linkedin className="w-5 h-5" />
             </a>
-            <a href="#" aria-label="GitHub" className="social-icon">
+
+            {/* GitHub */}
+            <a
+              href="https://github.com/mansi066"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="social-icon"
+            >
               <Github className="w-5 h-5" />
             </a>
           </div>
