@@ -1,11 +1,13 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Clock, Users, Award, Code, Database, Cloud, Brain, Wrench } from "lucide-react"
-import Link from "next/link"
 
+// Assessment Data Array
 const assessments = [
   {
     id: "frontend",
@@ -69,6 +71,7 @@ const assessments = [
   }
 ]
 
+// Difficulty Color Helper
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
     case "Beginner": return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
@@ -80,9 +83,26 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 export default function AssessmentGrid() {
+  const router = useRouter()
+  
+  // Replace this simulation with your actual Auth state (e.g., from useAuth() or next-auth)
+  const [isLoggedIn, setIsLoggedIn] = useState(false) 
+
+  const handleStartAssessment = (id: string) => {
+    if (!isLoggedIn) {
+      // Redirect to login/register page
+      // We pass the redirect path as a query parameter so the user returns here after auth
+      router.push(`/login?redirect=/assessments/${id}`)
+    } else {
+      // Direct access if logged in
+      router.push(`/assessments/${id}`)
+    }
+  }
+
   return (
     <section className="py-16 px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Choose Your Assessment</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -90,6 +110,7 @@ export default function AssessmentGrid() {
           </p>
         </div>
 
+        {/* Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {assessments.map((assessment) => {
             const IconComponent = assessment.icon
@@ -107,7 +128,7 @@ export default function AssessmentGrid() {
                 </CardHeader>
                 
                 <CardContent className="space-y-4">
-                  {/* Stats */}
+                  {/* Stats Row */}
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
@@ -123,7 +144,7 @@ export default function AssessmentGrid() {
                     </div>
                   </div>
 
-                  {/* Skills */}
+                  {/* Skills List */}
                   <div className="flex flex-wrap gap-1">
                     {assessment.skills.map((skill) => (
                       <Badge key={skill} variant="secondary" className="text-xs">
@@ -137,12 +158,13 @@ export default function AssessmentGrid() {
                     {assessment.questions} questions • Pass score: 70%
                   </p>
 
-                  {/* CTA Button */}
-                  <Link href={`/assessments/${assessment.id}`}>
-                    <Button className="w-full glassmorphic-button-primary group-hover:scale-105 transition-transform">
-                      Start Assessment
-                    </Button>
-                  </Link>
+                  {/* Logic Button - Replaced <Link> to control navigation */}
+                  <Button 
+                    onClick={() => handleStartAssessment(assessment.id)}
+                    className="w-full glassmorphic-button-primary group-hover:scale-105 transition-transform"
+                  >
+                    Start Assessment
+                  </Button>
                 </CardContent>
               </Card>
             )
