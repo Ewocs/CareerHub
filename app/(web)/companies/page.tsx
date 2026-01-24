@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Search, Building, Filter, Star } from "lucide-react";
 import CompanyCard from "@/components/company-card";
+import CompanyCardSkeleton from "@/components/skeletons/company-card-skeleton";
 import { CompanyProfile, CompanyDataManager } from "@/lib/company-data";
 
 export default function CompaniesPage() {
@@ -66,21 +67,6 @@ export default function CompaniesPage() {
   };
 
   const stats = getCompanyStats();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-muted-foreground">Loading companies...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -198,11 +184,11 @@ export default function CompaniesPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">
-              {filteredCompanies.length} Companies Found
+              {isLoading ? "Loading Companies..." : `${filteredCompanies.length} Companies Found`}
             </h2>
           </div>
 
-          {filteredCompanies.length === 0 ? (
+          {filteredCompanies.length === 0 && !isLoading ? (
             <div className="text-center py-12">
               <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">No companies found</h3>
@@ -222,9 +208,14 @@ export default function CompaniesPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCompanies.map((company) => (
-                <CompanyCard key={company.id} company={company} />
-              ))}
+              {isLoading
+                ? Array.from({ length: 6 }, (_, i) => (
+                    <CompanyCardSkeleton key={i} />
+                  ))
+                : filteredCompanies.map((company) => (
+                    <CompanyCard key={company.id} company={company} />
+                  ))
+              }
             </div>
           )}
         </div>
